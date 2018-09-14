@@ -1,0 +1,14 @@
+.org-price{
+  color:red;
+  text-decoration: line-through;
+}
+.container-alert-flash{
+  position: absolute;
+  top:40px;
+  z-index: 50000;
+  width: 100%;
+
+}
+.bold{
+  font-weight: bold;
+}

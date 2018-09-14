@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% block jum %}
+{% endblock %}
+<h2 class="text-center">{{object_list.first.product|title}}</h2>
+<div class="row">
+{% for object in object_list %}
+<div class="col-xs-2">
+ {% include "products/product_thumbnail.html" with product=object %}
+</div>
+{% cycle '' '' '' '' '' '</div><div class="row">' %}
+{% endfor %}
+</div>
+<div class="row">
+  <div class="col-sm-4">
+<form method="post" action="">
+  {% csrf_token %}
+  {{formset.management_form}}
+  {% for form in formset %}
+  {% if form.instance.product %}
+<h3>  {{form.instance.product|title}}
+  {{form.instance.title}}</h3>
+  {% else %}
+  <br>
+  <hr>
+  <h3>New Add</h3>
+  {% endif %}
+  {{form|crispy}}
+
+  {% endfor %}
+  <input type="submit" name="" value="Update">
+</form>
+</div>
+</div>
+{% endblock %}

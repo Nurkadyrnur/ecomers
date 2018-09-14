@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block jum %}
+
+{% endblock %}
+<script type="text/javascript">
+  {% block jqery %}
+  $(".item-qty").change(function(event){
+    var qty = $(this).val()
+    var item = $(this).prev("input[type = 'hidden']").val()
+    var data = {
+      qty:qty,
+      item:item
+    };
+    $.ajax({
+      type:"GET",//"POST"
+      url: "{% url 'cart' %}",
+      data:data,
+      success: function(data) {
+        if(data.deleted){
+          $("#item-"+item).fadeOut()
+          $("#subtotal").text(data.subtotal)
+          $("#tax_total").text(data.tax_total)
+          $("#total").text(data.total)
+        }else{
+
+          $("#item-line-total-"+item).text(data.line_total)
+          $("#subtotal").text(data.subtotal)
+          $("#tax_total").text(data.tax_total)
+          $("#total").text(data.total)
+        }
+        updateCart()
+      },
+      error: function(response) {
+        console.log(response)
+        console.log(error)
+      }
+    })
+  });
+
+  {% endblock %}
+</script>
+
+
+{% block content %}
+<h3 class="text-center">Cart {{object.id}}</h3>
+{% if object.cartitem_set.all.count < 1 %}
+<div class="text-center">
+  <h3>Your cart is empty</h3>
+  <p>Continue shopping</p>
+</div>
+{% else %}
+<div class="row">
+  <div class="col-sm-8 col-sm-offset-2">
+
+
+<table class="table">
+{% for item in object.cartitem_set.all %}
+<tr id="item-{{item.item.id}}">
+    <td>{{item.item.get_title|title}}</td>
+    <td><form method="get" action=".">
+      <input type="hidden" name="item" value="{{item.item.id}}"> <input type="number" class="item-qty text-center" name="qty" value="{{item.quantity}}"></form> </td>
+    <td id="item-line-total-{{item.item.id}}">{{item.line_total_price}}</td>
+    <td> <a href="{{item.remove}}">X</a></td>
+
+</tr>
+{% endfor %}
+<tr>
+<td  colspan="4" class='text-right'>Subtotal:<span id="subtotal"> {{object.sub_total}}</span></td>
+</tr>
+<tr>
+<td colspan="4" class='text-right'>Taxes:<span id="tax_total"> {{object.tax_total}}</span></td>
+</tr>
+<tr>
+<td colspan="4" class='text-right'>Total:<span id="total"> {{object.total}}</span></td>
+</tr>
+<tr>
+<td colspan="4" class='text-right'> <a class="btn btn-warning" href="{% url 'checkout' %}">Checkout</a> </td>
+</tr>
+
+</table>
+</div>
+</div>
+{% endif %}
+{% endblock %}

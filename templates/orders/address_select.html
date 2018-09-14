@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% load  crispy_forms_tags %}
+{% block jum %}
+
+{% endblock %}
+{% block content %}
+<div class="row">
+  <div class="col-sm-4 col-sm-offset-4 text-center">
+    <form method="post" action="">
+      {% csrf_token %}
+      {{form|crispy}}
+    <input type="submit" class="btn btn-success" value="submit">
+    </form>
+    <br>
+    <a class="btn btn-link" href="{% url 'checkout_address_add'  %}">Add New Address</a>
+  </div>
+</div>
+{% endblock %}

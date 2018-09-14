@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block jum %}
+{% endblock %}
+{% block content %}
+{% include "orders/order_summery_sort.html" with order=object %}
+<p class="bold text-center">Please print for your records</p>
+{% endblock %}

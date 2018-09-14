@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+{% block head_title %}
+  Ecomers
+{% endblock head_title%}
+<style media="screen">
+{% block css %}
+  .jumbotron{
+    {% if featured_img.make_image_background %}
+    background-image: url({{featured_img.image.url}});
+    background-size:cover;
+    background-repeat:no-repeat;
+    background-position-y:46%;
+    color:{{featured_img.text_css_color}}
+    {% endif %}
+  }
+{% endblock %}
+</style>
+
+{% block jumbotron%}
+<div class="row">
+  <div class="col-sm-6 {% if featured_img.text_right %}col-sm-offset-6{% endif %}">
+    <h1>{{featured_img.title|title}}</h1>
+    <p >{{featured_img.text}}</p>
+  </div>
+</div>
+{% endblock jumbotron %}
+{% block content %}
+
+<h2 class="text-center">Recomendent products</h2>
+<br>
+<div class="row">
+  {% for product in products %}
+  <div class="col-xs-2">
+   {% include "products/product_thumbnail.html" with product=product %}
+   </div>
+{% cycle '' '' '' '' '' '</div><div class="row">' %}
+
+   {% endfor %}
+  </div>
+{% endblock content %}

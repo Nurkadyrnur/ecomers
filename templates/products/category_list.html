@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+{% block jum %}
+{% endblock %}
+
+<h2 class="text-center">Categories</h2>
+
+<div class="row">
+{% for object in object_list %}
+<div class="col-xs-2">
+ {% include "products/product_thumbnail.html" with product=object %}
+</div>
+{% cycle '' '' '' '' '' '</div><div class="row">' %}
+{% endfor %}
+</div>
+
+
+{% endblock %}

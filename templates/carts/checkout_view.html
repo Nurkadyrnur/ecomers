@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block jum %}
+
+{% endblock %}
+{% load i18n %}
+{% load crispy_forms_tags %}
+<script type="text/javascript">
+  {% block jqery %}
+  var clientToken = "{{ client_token }}";
+
+braintree.setup(clientToken, "dropin", {
+  container: "payment-form"
+});
+{% endblock %}
+</script>
+{% block content %}
+
+  {% if not user_can_continue %}
+  <div class="row">
+    <div class="col-sm-6">
+      <h3>Continue as Guest</h3>
+      <form method="post" action="">
+        {% csrf_token %}
+        {{form|crispy}}
+        <input type="submit" class="btn btn-success" value="Continue as Guest">
+      </form>
+    </div>
+    <div class="col-sm-6">
+      <h3>Login to Continue</h3>
+      <form method="post" action="{% url 'auth_login' %}">{% csrf_token %}
+        {{ login_form|crispy }}
+        <input type="hidden" name="next" value="{{next_url}}">
+        <input type="submit" class="btn btn-success" value="Login">
+      </form>
+      <div class="text-center">
+
+
+      <p>{% trans "Forgot password" %}? <a href="{% url 'auth_password_reset' %}">{% trans "Reset it" %}</a>!</p>
+      <p>{% trans "Not member" %}? <a href="{% url 'registration_register' %}">{% trans "Register" %}</a>!</p>
+      </div>
+    </div>
+  </div>
+  {% else %}
+  <div class="row">
+    <div class="col-sm-4 col-sm-offset-4 text-center">
+  {% include "orders/order_summery_sort.html" with order=order%}
+        <br>
+        <div class="text-center">
+        <p class="bold"> <a href="{% url 'checkout_address' %}">Change Addres</a> </p>
+
+                  <form method="post" id="checkout" action="{% url 'checkout_final' %}">
+                    {% csrf_token %}
+                    <div id="payment-form"></div>
+                    <h4 class="bold"><button type="submit" class="btn btn-default" name="button">Complate Order</button></h4>
+                  </form>
+
+</form>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+{% endblock %}

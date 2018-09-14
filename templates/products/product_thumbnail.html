@@ -1,0 +1,9 @@
+
+<div class="thumbnail text-center">
+<h4><a href="{{product.get_absolute_url}}">{{product.title|title}}</a></h4>
+{% if product.get_img_url %}
+<a href="{{product.get_absolute_url}}"><img src="{{product.get_img_url}}" class="img-responsive" alt="..."></a>
+<br>
+{% endif %}
+{{product.get_html_price}}
+</div>

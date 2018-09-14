@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block jum %}
+{% endblock %}
+<script type="text/javascript">
+{% block jqery %}
+function price_num(){
+  var price = $(".variation_select option:selected").attr("data-price");
+  var sale_price = $(".variation_select option:selected").attr("data-sale-price");
+  if (sale_price != "" && sale_price !="None" && sale_price !=null){
+    $("#price").html("<h3>"+ sale_price +" <small class='org-price' >Original price "+price+"</small></h3>");
+  }else{
+    $("#price").text(price);
+  };
+};
+  price_num();
+   $(".variation_select").change(function(){
+     price_num();
+   });
+$("#submit-btn").click(function(event){
+  event.preventDefault();
+  var formData = $("#add-form").serialize()
+  console.log(formData)
+  $.ajax({
+    type:"GET",//"POST"
+    url: "{% url 'cart' %}",
+    data:formData,
+    success: function(data) {
+      showFalshMessage(data.message_cart)
+      updateCart()
+    },
+    error: function(response) {
+      console.log(response)
+      console.log(error)
+    }
+  })
+});
+
+
+
+{% endblock %}
+
+{% block content %}
+
+
+</script>
+<div class="row">
+    <div class="col-sm-8">
+      <h2 class="text-center"> {{object.title|title}}</h2>
+
+
+      <div >
+          <img  class="img-responsive" src="{{object.get_img_url}}" alt="no-image">
+      </div>
+
+
+      <p>
+     {{object.description}}
+      </p>
+    </div>
+
+  <!-- Product sidebar -->
+    <div class="col-sm-4">
+
+<form id='add-form' method="get" action="{% url 'cart' %}">
+  <h3 id='jquery-message'></h3>
+    {% if object.variation_set.count > 1 %}
+    <h3 id="price">{{object.price}}</h3>
+    <select name="item" class="form-control variation_select">
+    {% for obj in object.variation_set.all %}
+      <option data-sale-price = "{{obj.sale_price}}" data-price = "{{obj.price}}" value="{{obj.id}}">{{obj.title}}</option>
+    {% endfor %}
+    </select>
+    {% else %}
+    <input type="hidden" name="item" value="{{object.variation_set.first.id}}">
+    {% if object.variation_set.first.sale_price %}
+
+    <h3 id="price">{{object.variation_set.first.sale_price}}
+    <small class="org-price" id="price">{{object.price}}</small></h3>
+    {% else %}
+    <h3 id="price">{{object.price}}</h3>
+    {% endif %}
+    {% endif %}
+    <br>
+    <input class="form-control" type="number" name="qty" value="1">
+    <br>
+    <input id='submit-btn' type="submit" value="Add to cart" class="btn btn-default">
+</form>
+    <br>
+    <hr>
+
+    <a href="http://www.facebook.com/sharer.php?u={{request.build_absolute_uri}}" target="_blank"><i class="fab fa-facebook-square fa-3x"></i></a>
+    <hr>
+     <h4> <strong> Related Product</strong></h4>
+
+  <div class="row">
+    {% for rel in related %}
+    <div class="col-xs-6">
+     {% include "products/product_thumbnail.html" with product=rel %}
+     </div>
+{% cycle '' '</div><div class="row">' %}
+
+     {% endfor %}
+    </div>
+<!--End Product sidebar -->
+
+
+</div>
+{% endblock %}
